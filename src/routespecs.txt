@@ -1,0 +1,79 @@
+Request: POST /api/user/
+Body:
+{
+"username": <USER INPUT>
+}
+Response:
+{
+"success": true,
+"data": {
+    "id": <ID>,
+    "username": <USER INPUT FOR NAME>
+    }
+}
+
+
+Request: GET /api/user/<int:userid/
+Response:
+{
+"success": true,
+"data": {SERIALIZED USER}
+}
+
+
+Request: DELETE /api/user/<int:userid>/delete/
+Response:
+{
+"success": true,
+"data": {SERIALIZED USER}
+}
+
+
+Request: POST /api/weather/ or POST /api/weather?city=<cityname>
+Body:
+{
+"latitude": <number>,
+"longitude": <number>,
+"units": <string, "imperial" (F, mph) or "metric"(C, m/s)>
+}
+Response:
+{
+"success": true,
+"data": {
+    "latitude": <USER INPUT FOR LATITUDE>,
+    "longitude": <USER INPUT FOR LONGITUDE>,
+    "units": <USER INPUT FOR UNITS>,
+    "temp": <int>,
+    "temp_max": <int>,
+    "temp_min": <int>,
+    "humidity": <int>,
+    "wind": {"speed": <number>, "dir": <string, like N, NW, SW, etc>}
+    "weather": [
+        {"name": <string>,
+        "icon_route": <string, route to make the request for the icon image>},
+        ...]
+    "cat": <string, name of image for appropriate cat without file type extension>
+    }
+}
+
+
+THE FOLLOWING REQUEST'S RESPONSE IS SUBJECT TO CHANGE
+Request: POST /api/forecast/ or POST /api/forecast?city=<cityname>
+Body:
+{
+"latitude": <USER INPUT>,
+"longitude": <USER INPUT>,
+"units": <string, "imperial" (F, mph) or "metric"(C, m/s)>
+"local_time": <? however frontend can give local time>
+}
+Response:
+{
+"success": true,
+"data": {
+    "latitude": <USER INPUT FOR LATITUDE>,
+    "longitude": <USER INPUT FOR LONGITUDE>,
+    "units": <USER INPUT FOR UNITS>,
+    "high_temperatures": <list of 4 int, index0=today, index1=tommorow, etc>,
+    "low_temperatures": <list of 4 int, see above>
+    }
+}

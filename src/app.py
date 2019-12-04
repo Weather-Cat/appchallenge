@@ -1,8 +1,11 @@
 import json
 import os
 import requests
+import dao
+import time
 from secrets import *
 from flask import Flask, request
+from db import db, User, CatWear
 
 db_filename = "wxcat.db"
 app = Flask(__name__)
@@ -20,9 +23,16 @@ with app.app_context():
 def welcome():
     return "You've reached the WeatherCat API!"
 
+#initialize the databases used for decision making
+# @app.route('api/initialize/')
+# def initialize_cats():
+#     init_catwear()
+
+
 @app.route('/api/user/', methods = ['POST'])
 def new_user():
     try:
+        pbody = json.loads(request.data)
         user = User(username = pbody.get('username'))
         db.session.add(user)
         db.session.commit()
@@ -39,7 +49,7 @@ def get_user(userid):
         return json.dumps({'success': False, 'error': 'user not found'}), 404
 
 @app.route('/api/user/<int:userid>/delete/', methods = ['DELETE'])
-def get_user(userid):
+def delete_user(userid):
     try:
         user = User.query.filter_by(id = userid).first()
         db.session.delete(user)
@@ -114,62 +124,33 @@ def get_user(userid):
 
 #acesses an external API to get the current weather for the user's location
 @app.route('/api/weather/', methods = ['POST'])
+@app.route('api/weather', methods = ['POST'])
 #@app.route('/api/weather/<int:locationid>/', methods = ['POST'])
 def get_wx(locationid = 0):
     """Acesses the current weather for a given location. A locationid of 0
-    indicates that the weather for the given coordinates should be accessed. The
-    POST body should be:
-    {
-    "latitude": <number>,
-    "longitude": <number>,
-    "units": <string, imperial or metric>
-    }
-    Returns a json object that includes:
-    {
-    "success": true,
-    "data": {
-        "latitude": <number>,
-        "longitude": <number>,
-        "units": <string, e or m (english or metric)>,
-        "temperature": <int>,
-        "wind": <list of one int (speed) and one string (direction)>,
-        "weather": <list of strings>,
-        "cat_wears": <serialized version of what the cat is wearing>,
-        "background": <list of serialized version of background elements>
-        }
-    }
+    indicates that the weather for the given coordinates should be accessed.
     """
     try:
+        pbody = json.loads(request.data)
         units = pbody.get('units')
         lat = pbody.get('latitude')
         lon = pbody.get('longitude')
-        data = requests.get(WXADDR + '?lat=' + lat + '&lon=' + lon + APIKEY)
+        data = requests.get(ADDR+WX+'?lat='+str(lat)+'&lon='+str(lon)+'&units='+units+APIKEY)
+        data = data.json()
 
-        temp = data['main'].get('temp')
-        humidity = data['main'].get('humidity')
-        t_max = data['main'].get('temp_max')
-        t_min = data['main'].get('temp_min')
-        wind = {'speed': data['wind'].get('speed'), 'dir': data['wind'].get('deg')}
-        weather = {'wx_id': data['weather'].get('id'), 'description': data['weather'].get('description')}
+        temp = data['main']['temp']
+        humidity = data['main']['humidity']
+        t_max = data['main']['temp_max']
+        t_min = data['main']['temp_min']
+        wind = {'speed': data['wind']['speed'], 'dir': data['wind']['deg']}
+        weather = [{'name': i['main'],
+            'icon_route': ICON + i['icon'] + '.png'
+            } for i in data['weather']]
 
-        if wind['dir'] > 337.5 or wind['dir'] <= 22.5:
-            wind['dir'] = 'N'
-        elif wind['dir'] > 22.5 or wind['dir'] <= 67.5:
-            wind['dir'] = 'NE'
-        elif wind['dir'] > 67.5 or wind['dir'] <= 112.5:
-            wind['dir'] = 'E'
-        elif wind['dir'] > 112.5 or wind['dir'] <= 157.5:
-            wind['dir'] = 'SE'
-        elif wind['dir'] > 157.5 or wind['dir'] <= 202.5:
-            wind['dir'] = 'S'
-        elif wind['dir'] > 202.5 or wind['dir'] <= 247.5:
-            wind['dir'] = 'SW'
-        elif wind['dir'] > 247.5 or wind['dir'] <= 292.5:
-            wind['dir'] = 'W'
-        elif wind['dir'] > 292.5 or wind['dir'] <= 337.5:
-            wind['dir'] = 'NW'
-        else:
-            wind['dir'] = None
+        wind['dir'] = dao.convert_wind(wind['dir'])
+        cat = dao.get_catwear(temp)
+        if cat == 'error':
+            return json.dumps({'success': False, 'error': 'cat not found'}), 404
 
         return json.dumps({
             'success': True,
@@ -177,13 +158,13 @@ def get_wx(locationid = 0):
                 "latitude": lat,
                 "longitude": lon,
                 "units": units,
-                "temperature": temp,
-                "high_temperature": t_max,
-                "low_temperature": t_min,
+                "temp": temp,
+                "temp_max": t_max,
+                "temp_min": t_min,
                 "humidity": humidity,
                 "wind": wind,
-                "weather": weather
-                #cat part will be added later, once that database is initalized with values
+                "weather": weather,
+                "cat": cat
             }}), 200
 
     except:
@@ -191,6 +172,7 @@ def get_wx(locationid = 0):
 
 #acesses an external API to get the forecasted weather for the user's location
 @app.route('/api/forecast/', methods = ['POST'])
+@app.route('/api/forecast', methods = ['POST'])
 #@app.route('/api/forecast/<int:locationid>/', methods = ['POST'])
 def get_forecast(locationid = 0):
     """Acesses the forecast for a given location. A locationid of 0 indicates
@@ -199,7 +181,8 @@ def get_forecast(locationid = 0):
     {
     "latitude": <number>,
     "longitude": <number>,
-    "units": <string, e or m (english or metric)>
+    "units": <string, imperial or metric>
+    "local_time": <integer?>
     }
     Returns a json object that includes:
     {
@@ -211,6 +194,25 @@ def get_forecast(locationid = 0):
         }
     }
     """
+    try:
+        pbody = json.loads(request.data)
+        units = pbody.get('units')
+        lat = pbody.get('latitude')
+        lon = pbody.get('longitude')
+        local_time = pbody.get('local_time')
+        data = requests.get(ADDR+FCST+'?lat='+str(lat)+'&lon='+str(lon)+'&units='+units+APIKEY)
+        data = data.json()
+
+        all_t = []
+        times = []
+        for d in data['list']:
+            all_t.append(d['main']['temp'])
+            times.append(d['dt_txt'])
+
+        highlow = high_lows(all_t, times, local_time)
+
+    except:
+        return json.dumps({'success': False, 'error': 'forecast not found'}), 404
     pass
 
 
