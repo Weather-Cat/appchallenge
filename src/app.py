@@ -35,7 +35,7 @@ def welcome():
 #initialize the databases used for decision making
 @app.route('/api/initialize/')
 def initialize_cats():
-   catwear = CatWear.query.all()    
+    catwear = CatWear.query.all()    
     if len(catwear) == 0: 
         try:
             dao.init_catwear()
