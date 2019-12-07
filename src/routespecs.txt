@@ -81,5 +81,12 @@ Response:
     "units": <USER INPUT FOR UNITS>,
     "high_temps": <list of 3 numbers, index 0=tomorrow, index 1=2 days from today, etc>,
     "low_temps": <list of 3 numbers, see above>
+    "12hr_forecast": [
+        {"time": <int, time in 24hr time>,
+        "temp": <number>,
+        "weather":[{"name": <string>,
+        "icon_route": <string, route to make the request for the icon image>},
+        ...]},
+        ...]
     }
 }
