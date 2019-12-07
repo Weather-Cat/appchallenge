@@ -6,6 +6,7 @@ import time
 from secrets import *
 from flask import Flask, request
 from db import db, User, CatWear
+from dotenv import load_dotenv, find_dotenv
 
 db_filename = "wxcat.db"
 app = Flask(__name__)
@@ -18,6 +19,14 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+load_dotenv(find_dotenv()) 
+ 
+APIKEY = os.getenv("APIKEY")
+ADDR = os.getenv("ADDR") 
+WX = os.getenv("WX")
+ICON = os.getenv("ICON")
+FCST = os.getenv("FCST")
+
 #Default route, just there to see if the API works :)
 @app.route('/')
 def welcome():
@@ -26,12 +35,16 @@ def welcome():
 #initialize the databases used for decision making
 @app.route('/api/initialize/')
 def initialize_cats():
-    try:
-        cats = dao.init_catwear()
-        return json.dumps({'success': True, 'data': cats}), 201
-
-    except:
-        return json.dumps({'success': False, 'error': "CatWear database still uninitalized :("}), 404
+   catwear = CatWear.query.all()    
+    if len(catwear) == 0: 
+        try:
+            dao.init_catwear()
+            catwear = CatWear.query.all() 
+            res = [s.serialize() for s in catwear]
+            return json.dumps({'success': True, 'data': res}), 201
+        except:
+            return json.dumps({'success': False, 'error': "CatWear database still uninitalized"}), 404
+    return json.dumps({'success': False, 'error': "CatWear database is already initialized"}) , 404 
 
 
 
