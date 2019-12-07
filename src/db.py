@@ -7,10 +7,10 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String, nullable = False)
-    lasttime = db.Column(db.)
-    last_t_max = db.Column(db.Integer, nullable = True)
-    last_t_min = db.Column(db.Integer, nullable = True)
-    last_forecast
+    #lasttime = db.Column(db.)
+    #last_t_max = db.Column(db.Integer, nullable = True)
+    #last_t_min = db.Column(db.Integer, nullable = True)
+    #last_forecast
     #locations = db.relationship()
 
     def __init__(self, **kwargs):

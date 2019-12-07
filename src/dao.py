@@ -37,15 +37,17 @@ def high_lows(temps, times, local_time):
 
     temps: list of numbers
     times: list of dates/times in str format
+    local_time: data/time in str format
     """
     #probably EXTREMELY buggy
     assert is_number_list(temps)
     assert is_string_list(times)
+    assert type(local_time) == str
 
     times = clean_times(times)
     length = len(times)
+    local_now = clean_times(local_time)[0]
     utc_now = datetime.now(timezone.utc)
-    local_now = #datatime local_time
     offset = utc_now - local_now
 
     last_midnight = 0
@@ -74,22 +76,26 @@ def high_lows(temps, times, local_time):
             last_midnight = next_midnight
 
     #finds the low temperatures between each high, BUGGY, this will error when i+1 doesn't exist
-    for i in time_highs:
-        low = temps[i]
-        for j in range(i, i+1):
+    for i in range(1, len(highs)):
+        low = temps[i_highs[i-1]]
+        for j in range(i_highs[i-1], i_highs[i] + 1):
             if temps[j] < low:
                 low = temps[j]
 
         lows.append(low)
 
-    return (highs, lows)
+    return (highs[:len(highs)-1], lows)
 
 
-def clean_times(times):
+def clean_times(times, is_list=True):
     """Turns a list of strings formated in 'YYYY-MM-DD HH:MM:SS' to a list of
     datetime objects. Ignores the minutes and seconds of the string. Returns the
     new list."""
-    assert is_string_list(times)
+    if is_list == True:
+        assert is_string_list(times)
+    else:
+        assert type(times) == str
+        times = list(times)
 
     newtimes = []
     for i in times:
@@ -107,12 +113,12 @@ def clean_times(times):
 def init_catwear():
     """Initializes the CatWear database."""
     print('Initializing CatWear database...')
-    cats = [{'imagename': 'Bundle_Cat', 't_max': 20, 't_min': None},
-        {'imagename': 'Jacket_Cat', 't_max': 35, 't_min': 20},
-        {'imagename': 'Sweater_Cat', 't_max': 50, 't_min': 35},
-        {'imagename': 'Hoodie_Cat', 't_max': 65, 't_min': 50},
-        {'imagename': 'T-Shirt_Cat', 't_max': 80, 't_min': 65},
-        {'imagename': 'Sweating_Cat', 't_max': None, 't_min': 80}
+    cats = [{'imagename': 'Bundle_Cat', 't_max': 25, 't_min': None},
+        {'imagename': 'Jacket_Cat', 't_max': 32, 't_min': 25},
+        {'imagename': 'Sweater_Cat', 't_max': 50, 't_min': 32},
+        {'imagename': 'Hoodie_Cat', 't_max': 75, 't_min': 50},
+        {'imagename': 'T-Shirt_Cat', 't_max': 90, 't_min': 75},
+        {'imagename': 'Sweating_Cat', 't_max': None, 't_min': 90}
     ]
 
     for c in cats:
@@ -121,6 +127,7 @@ def init_catwear():
 
     db.session.commit()
     print('CatWear initialized!')
+    return cats
 
 
 def get_catwear(temp):

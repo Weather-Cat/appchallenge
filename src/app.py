@@ -24,9 +24,15 @@ def welcome():
     return "You've reached the WeatherCat API!"
 
 #initialize the databases used for decision making
-# @app.route('api/initialize/')
-# def initialize_cats():
-#     init_catwear()
+@app.route('api/initialize/')
+def initialize_cats():
+    try:
+        init_catwear()
+        return json.dumps({'success': True, 'data': cats}), 201
+
+    except:
+        return json.dumps({'success': False, 'error': "CatWear database still uninitalized :("}), 404
+
 
 
 @app.route('/api/user/', methods = ['POST'])
@@ -176,23 +182,7 @@ def get_wx(locationid = 0):
 #@app.route('/api/forecast/<int:locationid>/', methods = ['POST'])
 def get_forecast(locationid = 0):
     """Acesses the forecast for a given location. A locationid of 0 indicates
-    that the forecast for the given coordinates should be accessed. The POST
-    body should be:
-    {
-    "latitude": <number>,
-    "longitude": <number>,
-    "units": <string, imperial or metric>
-    "local_time": <integer?>
-    }
-    Returns a json object that includes:
-    {
-    "success": true,
-    "data": {
-        "units": <string, e or m (english or metric)>,
-        "high_temperatures": <list of 4 int, index0=today, index1=tommorow, etc>,
-        "low_temperatures": <list of 4 int, see above>
-        }
-    }
+    that the forecast for the given coordinates should be accessed.
     """
     try:
         pbody = json.loads(request.data)
@@ -213,7 +203,6 @@ def get_forecast(locationid = 0):
 
     except:
         return json.dumps({'success': False, 'error': 'forecast not found'}), 404
-    pass
 
 
 if __name__ == '__main__':

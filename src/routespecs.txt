@@ -64,7 +64,7 @@ Body:
 "latitude": <USER INPUT>,
 "longitude": <USER INPUT>,
 "units": <string, "imperial" (F, mph) or "metric"(C, m/s)>
-"local_time": <? however frontend can give local time>
+"local_time": <string, in format "YYYY-MM-DD HH:MM:SS">
 }
 Response:
 {
@@ -73,7 +73,7 @@ Response:
     "latitude": <USER INPUT FOR LATITUDE>,
     "longitude": <USER INPUT FOR LONGITUDE>,
     "units": <USER INPUT FOR UNITS>,
-    "high_temperatures": <list of 4 int, index0=today, index1=tommorow, etc>,
-    "low_temperatures": <list of 4 int, see above>
+    "high_temperatures": <list of 3 int, index0=today, index1=tommorow, etc>,
+    "low_temperatures": <list of 3 int, see above>
     }
 }
