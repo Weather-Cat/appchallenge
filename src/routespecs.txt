@@ -29,19 +29,22 @@ Response:
 }
 
 
-Request: POST /api/weather/ or POST /api/weather?city=<cityname>
+Request: POST /api/weather/ or POST /api/weather?city=<Cityname>
 Body:
 {
 "latitude": <number>,
 "longitude": <number>,
 "units": <string, "imperial" (F, mph) or "metric"(C, m/s)>
 }
+NOTE: only include Cityname OR latitude/longitude. If both are included, the
+function will find the weather at the given coordinates, not the city.
 Response:
 {
 "success": true,
 "data": {
-    "latitude": <USER INPUT FOR LATITUDE>,
-    "longitude": <USER INPUT FOR LONGITUDE>,
+    "latitude": <USER INPUT FOR LATITUDE OR null>,
+    "longitude": <USER INPUT FOR LONGITUDE OR null>,
+    "city": <USER INPUT FOR CITY OR null>
     "units": <USER INPUT FOR UNITS>,
     "temp": <number>,
     "temp_max": <number>,
@@ -66,12 +69,15 @@ Body:
 "units": <string, "imperial" (F, mph) or "metric"(C, m/s)>
 "local_time": <string, in format "YYYY-MM-DD HH:MM:SS">
 }
+NOTE: only include Cityname OR latitude/longitude. If both are included, the
+function will find the forecast at the given coordinates, not the city.
 Response:
 {
 "success": true,
 "data": {
-    "latitude": <USER INPUT FOR LATITUDE>,
-    "longitude": <USER INPUT FOR LONGITUDE>,
+    "latitude": <USER INPUT FOR LATITUDE OR null>,
+    "longitude": <USER INPUT FOR LONGITUDE OR null>,
+    "city": <USER INPUT FOR CITY OR null>
     "units": <USER INPUT FOR UNITS>,
     "high_temps": <list of 3 numbers, index 0=tomorrow, index 1=2 days from today, etc>,
     "low_temps": <list of 3 numbers, see above>

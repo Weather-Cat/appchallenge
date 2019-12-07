@@ -32,8 +32,9 @@ def convert_wind(dir):
 
 
 def high_lows(temps, times, local_time):
-    """Sorts out the highs and lows for a given block of temperatures. Returns a
-    tuple, (highs, lows).
+    """Sorts out the highs and lows for a given block of temperatures. Also
+    captures the local time and temperature for the first four items. Returns a
+    dictionary, {"highs": [], "lows": [], "12hr_forecast": [list of dict]).
 
     temps: list of numbers
     times: list of dates/times in str format
@@ -50,11 +51,17 @@ def high_lows(temps, times, local_time):
     offset = utc_now.hour - local_now.hour
 
     last_midnight = -1
+    first4 = 0
+    forecast_12hr = []
     highs = []
     i_highs = []
     lows = []
     for t in range(length):
         local = (times[t].hour - offset) % 24
+        #scoop off the local time and the temperature for the first 4 time/temperature pairs
+        if first4 < 4:
+            forecast_12hr.append({'time': local, 'temp': temps[t]})
+            first4 += 1
         #make sure the algorithm starts on the next day, not the current one
         if local in [0, 1, 2] and last_midnight == -1:
             last_midnight = t
@@ -83,7 +90,7 @@ def high_lows(temps, times, local_time):
 
         lows.append(low)
 
-    return (highs[:len(highs)-1], lows)
+    return {'highs': highs[:len(highs)-1], 'lows': lows, '12hr_forecast': forecast_12hr}
 
 
 def clean_times(times, is_list=True):

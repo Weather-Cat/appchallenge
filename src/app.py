@@ -59,6 +59,7 @@ def new_user():
     except:
         return json.dumps({'success': False, 'error': 'Could not create user'}), 404
 
+
 @app.route('/api/user/<int:userid>/')
 def get_user(userid):
     try:
@@ -66,6 +67,7 @@ def get_user(userid):
         return json.dumps({'success': True, 'data': user.serialize()}), 201
     except:
         return json.dumps({'success': False, 'error': 'user not found'}), 404
+
 
 @app.route('/api/user/<int:userid>/delete/', methods = ['DELETE'])
 def delete_user(userid):
@@ -150,11 +152,21 @@ def get_wx(locationid = 0):
     indicates that the weather for the given coordinates should be accessed.
     """
     try:
+        args = request.args
         pbody = json.loads(request.data)
         units = pbody.get('units')
-        lat = pbody.get('latitude')
-        lon = pbody.get('longitude')
-        data = requests.get(ADDR+WX+'?lat='+str(lat)+'&lon='+str(lon)+'&units='+units+APIKEY)
+        lat = pbody.get('latitude', None)
+        lon = pbody.get('longitude', None)
+        city = args.get('city', None)
+
+        if lat != None and lon != None:
+            location = '?lat='+str(lat)+'&lon='+str(lon)
+        elif city != None:
+            location = '?q='+str(city)
+        else:
+            return json.dumps({'success': False, 'error': 'missing location'}), 404
+
+        data = requests.get(ADDR+WX+location+'&units='+units+APIKEY)
         data = data.json()
 
         temp = data['main']['temp']
@@ -163,7 +175,7 @@ def get_wx(locationid = 0):
         t_min = data['main']['temp_min']
         wind = {'speed': data['wind']['speed'], 'dir': data['wind']['deg']}
         weather = [{'name': i['main'],
-            'icon_route': ICON + i['icon'] + '.png'
+            'icon_route': ICON+i['icon']+'.png'
             } for i in data['weather']]
 
         wind['dir'] = dao.convert_wind(wind['dir'])
@@ -176,6 +188,7 @@ def get_wx(locationid = 0):
             'data': {
                 "latitude": lat,
                 "longitude": lon,
+                "city": city,
                 "units": units,
                 "temp": temp,
                 "temp_max": t_max,
@@ -198,29 +211,50 @@ def get_forecast(locationid = 0):
     that the forecast for the given coordinates should be accessed.
     """
     try:
+        args = request.args
         pbody = json.loads(request.data)
         units = pbody.get('units')
-        lat = pbody.get('latitude')
-        lon = pbody.get('longitude')
         local_time = pbody.get('local_time')
-        data = requests.get(ADDR+FCST+'?lat='+str(lat)+'&lon='+str(lon)+'&units='+units+APIKEY)
+        lat = pbody.get('latitude', None)
+        lon = pbody.get('longitude', None)
+        city = args.get('city', None)
+
+        if lat != None and lon != None:
+            location = '?lat='+str(lat)+'&lon='+str(lon)
+        elif city != None:
+            location = '?q='+str(city)
+        else:
+            return json.dumps({'success': False, 'error': 'request missing location'}), 404
+
+        data = requests.get(ADDR+FCST+location+'&units='+units+APIKEY)
         data = data.json()
 
         all_t = []
         times = []
+        weather = []
+        i = 0
         for d in data['list']:
             all_t.append(d['main']['temp'])
             times.append(d['dt_txt'])
+            if i < 4:
+                weather.append([{'name': w['main'], 'icon_route': ICON+w['icon']+'.png'} for w in d['weather']])
+                i+=1
 
         highlow = dao.high_lows(all_t, times, local_time)
+        forecast_12hr = highlow['12hr_forecast']
+        for hour in range(len(weather)):
+            forecast_12hr[hour]['weather'] = weather[hour]
+
         return json.dumps({
             'success': True,
             'data': {
                 "latitude": lat,
                 "longitude": lon,
+                "city": city,
                 "units": units,
-                "high_temps": highlow[0],
-                "low_temps": highlow[1]
+                "high_temps": highlow['highs'],
+                "low_temps": highlow['lows'],
+                "12hr_forecast": forecast_12hr
             }}), 200
 
     except:
