@@ -114,29 +114,43 @@ def clean_times(times, is_list=True):
 def init_catwear():
     """Initializes the CatWear database."""
     print('Initializing CatWear database...')
-    cats = [{'imagename': 'Bundle_Cat', 't_max': 25, 't_min': None},
-        {'imagename': 'Jacket_Cat', 't_max': 32, 't_min': 25},
-        {'imagename': 'Sweater_Cat', 't_max': 50, 't_min': 32},
-        {'imagename': 'Hoodie_Cat', 't_max': 75, 't_min': 50},
-        {'imagename': 'T-Shirt_Cat', 't_max': 90, 't_min': 75},
-        {'imagename': 'Sweating_Cat', 't_max': None, 't_min': 90}
+    cats = [
+        {'imagename': 'Bundle_Cat', 'ft_max': 25, 'ft_min': None, 'ct_max': to_celcius(25), 'ct_min': None},
+        {'imagename': 'Jacket_Cat', 'ft_max': 32, 'ft_min': 25, 'ct_max': to_celcius(32), 'ct_min': to_celcius(25)},
+        {'imagename': 'Sweater_Cat', 'ft_max': 50, 'ft_min': 32, 'ct_max': to_celcius(50), 'ct_min': to_celcius(32)},
+        {'imagename': 'Hoodie_Cat', 'ft_max': 75, 'ft_min': 50, 'ct_max': to_celcius(75), 'ct_min': to_celcius(50)},
+        {'imagename': 'T-Shirt_Cat', 'ft_max': 90, 'ft_min': 75, 'ct_max': to_celcius(90), 'ct_min': to_celcius(75)},
+        {'imagename': 'Sweating_Cat', 'ft_max': None, 'ft_min': 90, 'ct_max': None, 'ct_min': to_celcius(90)}
     ]
 
     for c in cats:
-        cat = CatWear(imagename = c['imagename'], t_max = c['t_max'], t_min = c['t_min'])
+        cat = CatWear(
+            imagename = c['imagename'],
+            ft_max = c['ft_max'],
+            ft_min = c['ft_min'],
+            ct_max = c['ct_max'],
+            ct_min = c['ct_min'])
         db.session.add(cat)
 
     db.session.commit()
     print('CatWear initialized!')
 
 
-def get_catwear(temp):
-    """Determines the appropriate cat image for the given temperature.
-    temp: number"""
+def get_catwear(temp, units):
+    """Determines the appropriate cat image for the given temperature in the
+    given units.
+
+    temp: number
+    units: str, imperial or metric"""
     assert type(temp) in [int, float]
+    assert type(units) == str and units in ['imperial', 'metric']
     try:
-        cat = CatWear.query.filter(CatWear.t_min < temp, CatWear.t_max >= temp).first()
+        if units == 'imperial':
+            cat = CatWear.query.filter(CatWear.ft_min < temp, CatWear.ft_max >= temp).first()
+        elif units == 'metric':
+            cat = CatWear.query.filter(CatWear.ct_min < temp, CatWear.ct_max >= temp).first()
         return cat.serialize()
+
     except:
         return 'error'
 
@@ -167,3 +181,9 @@ def is_string_list(times):
             return False
 
     return True
+
+def to_celcius(temp):
+    """Converts a given temperature in fahrenheit to celcius.
+    num: number"""
+    assert type(temp) in [float, int]
+    return (5/9)*(temp-32)

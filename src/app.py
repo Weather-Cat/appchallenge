@@ -19,10 +19,10 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-load_dotenv(find_dotenv()) 
- 
+load_dotenv(find_dotenv())
+
 APIKEY = os.getenv("APIKEY")
-ADDR = os.getenv("ADDR") 
+ADDR = os.getenv("ADDR")
 WX = os.getenv("WX")
 ICON = os.getenv("ICON")
 FCST = os.getenv("FCST")
@@ -35,17 +35,17 @@ def welcome():
 #initialize the databases used for decision making
 @app.route('/api/initialize/')
 def initialize_cats():
-    catwear = CatWear.query.all()    
-    if len(catwear) == 0: 
+    catwear = CatWear.query.all()
+    if len(catwear) == 0:
         try:
             dao.init_catwear()
-            catwear = CatWear.query.all() 
+            catwear = CatWear.query.all()
             res = [s.serialize() for s in catwear]
             return json.dumps({'success': True, 'data': res}), 201
         except:
             return json.dumps({'success': False, 'error': "CatWear database still uninitalized"}), 404
-    return json.dumps({'success': False, 'error': "CatWear database is already initialized"}) , 404 
-
+    else:
+        return json.dumps({'success': False, 'error': "CatWear database is already initialized"}) , 404
 
 
 @app.route('/api/user/', methods = ['POST'])
@@ -167,7 +167,7 @@ def get_wx(locationid = 0):
             } for i in data['weather']]
 
         wind['dir'] = dao.convert_wind(wind['dir'])
-        cat = dao.get_catwear(temp)
+        cat = dao.get_catwear(temp, units)
         if cat == 'error':
             return json.dumps({'success': False, 'error': 'cat not found'}), 404
 

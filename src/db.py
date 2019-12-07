@@ -24,13 +24,17 @@ class CatWear(db.Model):
     __tablename__ = 'catwear'
     id = db.Column(db.Integer, primary_key = True)
     imagename = db.Column(db.String, nullable = False)
-    t_max = db.Column(db.Integer, nullable = True)
-    t_min = db.Column(db.Integer, nullable = True)
+    ft_max = db.Column(db.Integer, nullable = True)
+    ft_min = db.Column(db.Integer, nullable = True)
+    ct_max = db.Column(db.Integer, nullable = True)
+    ct_min = db.Column(db.Integer, nullable = True)
 
     def __init__(self, **kwargs):
         self.imagename = kwargs.get('imagename')
-        self.t_max = kwargs.get('t_max')
-        self.t_min = kwargs.get('t_min')
+        self.ft_max = kwargs.get('ft_max')
+        self.ft_min = kwargs.get('ft_min')
+        self.ct_max = kwargs.get('ct_max')
+        self.ct_min = kwargs.get('ct_min')
 
     def serialize(self):
         return {
