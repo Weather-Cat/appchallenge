@@ -136,7 +136,6 @@ def get_catwear(temp):
     assert type(temp) in [int, float]
     try:
         cat = CatWear.query.filter(CatWear.t_min < temp, CatWear.t_max >= temp).first()
-        print (cat.serialize()) 
         return cat.serialize()
     except:
         return 'error'
