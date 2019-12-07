@@ -128,7 +128,6 @@ def init_catwear():
 
     db.session.commit()
     print('CatWear initialized!')
-    return cats
 
 
 def get_catwear(temp):
