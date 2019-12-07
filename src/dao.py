@@ -39,7 +39,6 @@ def high_lows(temps, times, local_time):
     times: list of dates/times in str format
     local_time: data/time in str format
     """
-    #probably EXTREMELY buggy
     assert is_number_list(temps)
     assert is_string_list(times)
     assert type(local_time) == str
@@ -59,7 +58,6 @@ def high_lows(temps, times, local_time):
         #make sure the algorithm starts on the next day, not the current one
         if local in [0, 1, 2] and last_midnight == -1:
             last_midnight = t
-
         #finds the next midnight since the last one
         elif local in [0, 1, 2]:
             next_midnight = t
