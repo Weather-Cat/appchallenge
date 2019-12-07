@@ -1,5 +1,5 @@
 from db import db, User, CatWear
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 def convert_wind(dir):
     """Converts a given wind direction in degrees to a cardinal direction (N, NW,
@@ -46,28 +46,29 @@ def high_lows(temps, times, local_time):
 
     times = clean_times(times)
     length = len(times)
-    local_now = clean_times(local_time)[0]
+    local_now = clean_times(local_time, False)[0]
     utc_now = datetime.now(timezone.utc)
-    offset = utc_now - local_now
+    offset = utc_now.hour - local_now.hour
 
-    last_midnight = 0
+    last_midnight = -1
     highs = []
     i_highs = []
     lows = []
-    for t in range(last_midnight + 1, length + 1):
-        local = times[t] - offset
+    for t in range(length):
+        local = (times[t].hour - offset) % 24
         #make sure the algorithm starts on the next day, not the current one
-        if local.seconds in [0, 3600, 7200] and last_midnight == 0:
+        if local in [0, 1, 2] and last_midnight == -1:
             last_midnight = t
 
         #finds the next midnight since the last one
-        elif local.seconds in [0, 3600, 7200]:
+        elif local in [0, 1, 2]:
             next_midnight = t
             high = temps[last_midnight]
+            index = last_midnight
             #finds the highest temperature between two midnights and adds to the list of highs
             for p in range(last_midnight, next_midnight + 1):
                 if temps[p] > high:
-                    high = temp[p]
+                    high = temps[p]
                     index = p
 
             highs.append(high)
@@ -75,7 +76,7 @@ def high_lows(temps, times, local_time):
             #resets which index to start from
             last_midnight = next_midnight
 
-    #finds the low temperatures between each high, BUGGY, this will error when i+1 doesn't exist
+    #finds the low temperatures between each high
     for i in range(1, len(highs)):
         low = temps[i_highs[i-1]]
         for j in range(i_highs[i-1], i_highs[i] + 1):
@@ -95,7 +96,9 @@ def clean_times(times, is_list=True):
         assert is_string_list(times)
     else:
         assert type(times) == str
-        times = list(times)
+        alt = times
+        times = []
+        times.append(alt)
 
     newtimes = []
     for i in times:

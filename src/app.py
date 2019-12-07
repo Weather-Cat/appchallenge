@@ -24,10 +24,10 @@ def welcome():
     return "You've reached the WeatherCat API!"
 
 #initialize the databases used for decision making
-@app.route('api/initialize/')
+@app.route('/api/initialize/')
 def initialize_cats():
     try:
-        init_catwear()
+        cats = dao.init_catwear()
         return json.dumps({'success': True, 'data': cats}), 201
 
     except:
@@ -130,7 +130,7 @@ def delete_user(userid):
 
 #acesses an external API to get the current weather for the user's location
 @app.route('/api/weather/', methods = ['POST'])
-@app.route('api/weather', methods = ['POST'])
+@app.route('/api/weather', methods = ['POST'])
 #@app.route('/api/weather/<int:locationid>/', methods = ['POST'])
 def get_wx(locationid = 0):
     """Acesses the current weather for a given location. A locationid of 0
@@ -199,7 +199,16 @@ def get_forecast(locationid = 0):
             all_t.append(d['main']['temp'])
             times.append(d['dt_txt'])
 
-        highlow = high_lows(all_t, times, local_time)
+        highlow = dao.high_lows(all_t, times, local_time)
+        return json.dumps({
+            'success': True,
+            'data': {
+                "latitude": lat,
+                "longitude": lon,
+                "units": units,
+                "high_temps": highlow[0],
+                "low_temps": highlow[1]
+            }}), 200
 
     except:
         return json.dumps({'success': False, 'error': 'forecast not found'}), 404

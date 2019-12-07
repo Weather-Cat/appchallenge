@@ -43,9 +43,9 @@ Response:
     "latitude": <USER INPUT FOR LATITUDE>,
     "longitude": <USER INPUT FOR LONGITUDE>,
     "units": <USER INPUT FOR UNITS>,
-    "temp": <int>,
-    "temp_max": <int>,
-    "temp_min": <int>,
+    "temp": <number>,
+    "temp_max": <number>,
+    "temp_min": <number>,
     "humidity": <int>,
     "wind": {"speed": <number>, "dir": <string, like N, NW, SW, etc>}
     "weather": [
@@ -73,7 +73,7 @@ Response:
     "latitude": <USER INPUT FOR LATITUDE>,
     "longitude": <USER INPUT FOR LONGITUDE>,
     "units": <USER INPUT FOR UNITS>,
-    "high_temperatures": <list of 3 int, index0=today, index1=tommorow, etc>,
-    "low_temperatures": <list of 3 int, see above>
+    "high_temps": <list of 3 numbers, index 0=tomorrow, index 1=2 days from today, etc>,
+    "low_temps": <list of 3 numbers, see above>
     }
 }
