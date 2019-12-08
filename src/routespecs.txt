@@ -61,7 +61,7 @@ Response:
 
 
 THE FOLLOWING REQUEST'S RESPONSE IS SUBJECT TO CHANGE
-Request: POST /api/forecast/ or POST /api/forecast?city=<cityname>
+Request: POST /api/forecast/ or POST /api/forecast?city=<Cityname>
 Body:
 {
 "latitude": <USER INPUT>,

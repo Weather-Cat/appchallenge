@@ -1,6 +1,8 @@
+WeatherCat Backend README
+
 Included in /src is app.py, dao.py, db.py, requirements.txt, routespecs.txt and .env.
 
-app.py defines the valid Flasks that the app can make requests to as well as their
+app.py defines the valid API routes that the app can make requests to as well as their
 behavior.
 
 dao.py defines various data and database operations that help process, find, or
@@ -12,4 +14,5 @@ requirements.txt defines the required packages needed for app.py to run properly
 
 routespecs.txt describes the expected behavior of each route included in app.py.
 
-.env holds the API key for the weather API as well as the beginnings of the urls needed to make these requests.
+.env holds the API key for the weather API as well as common words usually needed 
+to help create the https to the json request. 
