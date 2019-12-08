@@ -2,8 +2,8 @@ from db import db, User, CatWear
 from datetime import datetime, timezone, timedelta
 
 #Lowest and highest temperature on earth at all time at the point of 12/7/19
-LOWF = -128.6
-HIGHF = 134.1
+LOWF = -128.6 - 5
+HIGHF = 134.1 + 5
 
 def convert_wind(dir):
     """Converts a given wind direction in degrees to a cardinal direction (N, NW,
@@ -47,7 +47,7 @@ def high_lows(temps, times, local_time):
     assert is_number_list(temps)
     assert is_string_list(times)
     assert type(local_time) == str
-
+    
     times = clean_times(times)
     length = len(times)
     local_now = clean_times(local_time, False)[0]

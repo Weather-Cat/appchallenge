@@ -215,7 +215,7 @@ def get_forecast(locationid = 0):
         pbody = json.loads(request.data)
         units = pbody.get('units')
         local_time = pbody.get('local_time')
-        lat = pbody.get('latitude', None)
+        lat = pbody.get('latitude', None) 
         lon = pbody.get('longitude', None)
         city = args.get('city', None)
 
@@ -239,7 +239,7 @@ def get_forecast(locationid = 0):
             if i < 4:
                 weather.append([{'name': w['main'], 'icon_route': ICON+w['icon']+'.png'} for w in d['weather']])
                 i+=1
-
+                
         highlow = dao.high_lows(all_t, times, local_time)
         forecast_12hr = highlow['12hr_forecast']
         for hour in range(len(weather)):
