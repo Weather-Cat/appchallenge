@@ -3,7 +3,6 @@ import os
 import requests
 import dao
 import time
-from secrets import *
 from flask import Flask, request
 from db import db, User, CatWear
 from dotenv import load_dotenv, find_dotenv
@@ -79,22 +78,6 @@ def delete_user(userid):
     except:
         return json.dumps({'success': False, 'error': 'user not found'}), 404
 
-#get the current location
-#probably will be replaced with something on front end side
-# @app.route('/api/location/')
-# def get_current_location():
-#     """Connects to an external API to find the current coordinates of the user and
-#     returns a json object that includes:
-#     {
-#     "success": true,
-#     "data": {
-#         "latitude": <number>,
-#         "longitude": <number>
-#         }
-#     }
-#     May need information to be sent with the request for the API? If so keep as
-#     GET and include info in route or change to POST?"""
-#     pass
 
 #define a new location for the user
 #DO NOT IMPLEMENT NOW!
@@ -215,7 +198,7 @@ def get_forecast(locationid = 0):
         pbody = json.loads(request.data)
         units = pbody.get('units')
         local_time = pbody.get('local_time')
-        lat = pbody.get('latitude', None) 
+        lat = pbody.get('latitude', None)
         lon = pbody.get('longitude', None)
         city = args.get('city', None)
 
@@ -239,7 +222,7 @@ def get_forecast(locationid = 0):
             if i < 4:
                 weather.append([{'name': w['main'], 'icon_route': ICON+w['icon']+'.png'} for w in d['weather']])
                 i+=1
-                
+
         highlow = dao.high_lows(all_t, times, local_time)
         forecast_12hr = highlow['12hr_forecast']
         for hour in range(len(weather)):
