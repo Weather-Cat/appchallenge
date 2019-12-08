@@ -1,6 +1,10 @@
 from db import db, User, CatWear
 from datetime import datetime, timezone, timedelta
 
+#Lowest and highest temperature on earth at all time at the point of 12/7/19
+LOWF = -128.6
+HIGHF = 134.1
+
 def convert_wind(dir):
     """Converts a given wind direction in degrees to a cardinal direction (N, NW,
     W, etc)
@@ -122,12 +126,12 @@ def init_catwear():
     """Initializes the CatWear database."""
     print('Initializing CatWear database...')
     cats = [
-        {'imagename': 'Bundle_Cat', 'ft_max': 25, 'ft_min': None, 'ct_max': to_celcius(25), 'ct_min': None},
+        {'imagename': 'Bundle_Cat', 'ft_max': 25, 'ft_min': LOWF, 'ct_max': to_celcius(25), 'ct_min': to_celcius(LOWF)},
         {'imagename': 'Jacket_Cat', 'ft_max': 32, 'ft_min': 25, 'ct_max': to_celcius(32), 'ct_min': to_celcius(25)},
         {'imagename': 'Sweater_Cat', 'ft_max': 50, 'ft_min': 32, 'ct_max': to_celcius(50), 'ct_min': to_celcius(32)},
         {'imagename': 'Hoodie_Cat', 'ft_max': 75, 'ft_min': 50, 'ct_max': to_celcius(75), 'ct_min': to_celcius(50)},
         {'imagename': 'T-Shirt_Cat', 'ft_max': 90, 'ft_min': 75, 'ct_max': to_celcius(90), 'ct_min': to_celcius(75)},
-        {'imagename': 'Sweating_Cat', 'ft_max': None, 'ft_min': 90, 'ct_max': None, 'ct_min': to_celcius(90)}
+        {'imagename': 'Sweating_Cat', 'ft_max': HIGHF, 'ft_min': 90, 'ct_max': to_celcius(HIGHF), 'ct_min': to_celcius(90)}
     ]
 
     for c in cats:
