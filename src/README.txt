@@ -1,10 +1,15 @@
-Included in /src is app.py, db.py, and secrets.py. secrets.py hold the API key
-for the weather API, it will eventually become a *.env file when run on Docker,
-but I wasn't sure how to run that on something that wasn't a container.
+Included in /src is app.py, dao.py, db.py, requirements.txt, routespecs.txt and .env.
 
-Most of app.py and db.py is commented out. These are routes/tables that are still
-in progress and/or very buggy. The uncommented routes work fine though.
-Specifications for the post body for the POST route is in app.py.
+app.py defines the valid Flasks that the app can make requests to as well as their
+behavior.
 
-UPDATE for second submission: Exactly the same as submission 1, but uncommented
-POST /api/weather/ route since I was able to work out the bugs.
+dao.py defines various data and database operations that help process, find, or
+initialize a data set/database.
+
+db.py defines the database models for Users and CatWear.
+
+requirements.txt defines the required packages needed for app.py to run properly.
+
+routespecs.txt describes the expected behavior of each route included in app.py.
+
+.env holds the API key for the weather API as well as the beginnings of the urls needed to make these requests.
