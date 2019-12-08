@@ -3,9 +3,14 @@
 ## CS 1998 App Challenge 2019
 
 ### What our app does:
-
 <p>WeatherCat is a visual representation of the weather by showing how a cartoon
 cat is dressed for the weather.</p>
+
+### Repositories:
+<p>Backend: <a href="https://github.com/Weather-Cat/appchallenge">
+https://github.com/Weather-Cat/appchallenge
+</a></p>
+<p>Frontend: Link Here</p>
 
 ### Description:
 <p>
@@ -43,4 +48,9 @@ to store and process information</li>
 <li>SQLAlchemy used to model how the cat information is stored (temperature range
 for the image in both Fahrenheit and Celcius and the image name)</li>
 <li>Currently running on a Docker container inside of a Google Cloud Server</li>
+</ol>
+
+### Frontend requirements:
+<ol>
+<li></li>
 </ol>
