@@ -79,53 +79,6 @@ def delete_user(userid):
         return json.dumps({'success': False, 'error': 'user not found'}), 404
 
 
-#define a new location for the user
-#DO NOT IMPLEMENT NOW!
-# @app.route('/api/location/new/', methods = ['POST'])
-# def new_location():
-#     """Inserts a new location into the locations database. Requests must look like:
-#     {
-#     "latitude": <number>,
-#     "longitude": <number>,
-#     "location_name": <string>,
-#     "user": <something here?>
-#     }
-#     Returns a json object that includes:
-#     {
-#     "success": true,
-#     "data": <serialized location>
-#     }
-#     The serialized version of the location includes id, closest city, and
-#     coordinates."""
-#     pass
-
-#get a location for the user
-#DO NOT IMPLEMENT NOW!
-# @app.route('/api/location/<int:locationid>/')
-# def get_saved_location(locationid):
-#     """Gets a location from the locations database. Returns a json object that includes:
-#     {
-#     "success": true,
-#     "data": <serialized location>
-#     }
-#     The serialized version of the location includes id, closest city, and
-#     coordinates"""
-#     pass
-
-#delete one of the user's locations
-#DO NOT IMPLEMENT NOW!
-# @app.route('/api/location/delete/<int:locationid>/', methods = ['DELETE'])
-# def delete_location(locationid):
-#     """Deletes a location from the locations database. Returns a json object
-#     that includes:
-#     {
-#     "success": true,
-#     "data": <serialized location>
-#     }
-#     The serialized version of the location includes id, closest city, and
-#     coordinates"""
-#     pass
-
 #acesses an external API to get the current weather for the user's location
 @app.route('/api/weather/', methods = ['POST'])
 @app.route('/api/weather', methods = ['POST'])
