@@ -28,7 +28,7 @@ then makes requests to an external API, openweathermap.org, to get the weather
 and forecast data used in this app.
 </p>
 <p>
-Based on the current coordinates and selected units of the user, the app makes a
+Based on either a city or a set of coordinates and selected units, the app makes a
 request to the API which determines and populates various fields, including current
 temperature, daily high, daily low, humidity, wind speed, wind direction, and the current
 weather conditions. The current temperature is compared to the temperature range
@@ -52,13 +52,4 @@ to store and process information</li>
 <li>SQLAlchemy used to model how the cat information is stored (temperature range
 for the image in both Fahrenheit and Celcius and the image name)</li>
 <li>Currently running on a Docker container inside of a Google Cloud Server</li>
-</ol>
-
-### Frontend requirements:
-<ol>
-<li>AutoLayout using NSLayoutConstraint or SnapKit</li>
-<li>At least one UICollectionView or UITableView</li>
-<li>Some form of navigation (UINavigationController or UITabBarController) to
-navigate between screens</li>
-<li>Integration with an API</li>
 </ol>
