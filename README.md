@@ -44,11 +44,7 @@ changes in temperature and weather conditions for the next 12 hours.
 Both the weather and forecast information is returned to the app, which presents
 the information to the user.
 </p>
-<p>
-The user can also specify a city for which they want the weather and forecast.
-The city name is added to the route requests and the weather and forecast are
-returned for the given city.
-</p>
+
 
 ### Backend requirements:
 <ol>
