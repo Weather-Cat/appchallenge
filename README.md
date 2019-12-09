@@ -7,8 +7,8 @@
 cat is dressed for the weather.</p>
 
 ### Screenshots
-<img src="screenshots/screen1.png">
-<img src="screenshots/screen2.png">
+<img src="screenshots/screen1.png" width="50%" height="50%">
+<img src="screenshots/screen2.png" width="50%" height="50%">
 
 ### Repositories:
 <p>Frontend: <a href="https://github.com/jasmineherrera/weathercat-ios">
