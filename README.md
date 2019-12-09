@@ -6,12 +6,19 @@
 <p>WeatherCat is a visual representation of the weather by showing how a cartoon
 cat is dressed for the weather.</p>
 
+### Screenshots
+<img src="screenshots/screen1.png">
+<img src="screenshots/screen2.png">
+
 ### Repositories:
+<p>Frontend: <a href="https://github.com/jasmineherrera/weathercat-ios">
+https://github.com/jasmineherrera/weathercat-ios
+</a></p>
 <p>Backend: <a href="https://github.com/Weather-Cat/appchallenge">
 https://github.com/Weather-Cat/appchallenge
 </a></p>
-<p>Frontend: <a href="https://github.com/jasmineherrera/weathercat-ios">
-https://github.com/jasmineherrera/weathercat-ios
+<p>Docker Image: <a href="https://hub.docker.com/r/gaiagirl007/weathercat">
+https://hub.docker.com/r/gaiagirl007/weathercat
 </a></p>
 
 ### Description:
@@ -54,5 +61,9 @@ for the image in both Fahrenheit and Celcius and the image name)</li>
 
 ### Frontend requirements:
 <ol>
-<li></li>
+<li>AutoLayout using NSLayoutConstraint or SnapKit</li>
+<li>At least one UICollectionView or UITableView</li>
+<li>Some form of navigation (UINavigationController or UITabBarController) to
+navigate between screens</li>
+<li>Integration with an API</li>
 </ol>
