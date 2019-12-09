@@ -82,11 +82,8 @@ def delete_user(userid):
 #acesses an external API to get the current weather for the user's location
 @app.route('/api/weather/', methods = ['POST'])
 @app.route('/api/weather', methods = ['POST'])
-#@app.route('/api/weather/<int:locationid>/', methods = ['POST'])
-def get_wx(locationid = 0):
-    """Acesses the current weather for a given location. A locationid of 0
-    indicates that the weather for the given coordinates should be accessed.
-    """
+def get_wx():
+    """Acesses the current weather for a given location."""
     try:
         args = request.args
         pbody = json.loads(request.data)
@@ -94,9 +91,10 @@ def get_wx(locationid = 0):
         lat = pbody.get('latitude', None)
         lon = pbody.get('longitude', None)
         city = args.get('city', None)
-
         if lat != None and lon != None:
             location = '?lat='+str(lat)+'&lon='+str(lon)
+            city = None
+
         elif city != None:
             location = '?q='+str(city)
         else:
@@ -113,6 +111,10 @@ def get_wx(locationid = 0):
         weather = [{'name': i['main'],
             'icon_route': ICON+i['icon']+'.png'
             } for i in data['weather']]
+
+        if city != None:
+            lat = data['coord']['lat']
+            lon = data['coord']['lon']
 
         wind['dir'] = dao.convert_wind(wind['dir'])
         cat = dao.get_catwear(temp, units)
@@ -141,22 +143,20 @@ def get_wx(locationid = 0):
 #acesses an external API to get the forecasted weather for the user's location
 @app.route('/api/forecast/', methods = ['POST'])
 @app.route('/api/forecast', methods = ['POST'])
-#@app.route('/api/forecast/<int:locationid>/', methods = ['POST'])
-def get_forecast(locationid = 0):
-    """Acesses the forecast for a given location. A locationid of 0 indicates
-    that the forecast for the given coordinates should be accessed.
-    """
+def get_forecast():
+    """Acesses the forecast for a given location."""
     try:
         args = request.args
         pbody = json.loads(request.data)
         units = pbody.get('units')
-        local_time = pbody.get('local_time')
         lat = pbody.get('latitude', None)
         lon = pbody.get('longitude', None)
         city = args.get('city', None)
 
         if lat != None and lon != None:
             location = '?lat='+str(lat)+'&lon='+str(lon)
+            city = None
+
         elif city != None:
             location = '?q='+str(city)
         else:
@@ -164,6 +164,10 @@ def get_forecast(locationid = 0):
 
         data = requests.get(ADDR+FCST+location+'&units='+units+APIKEY)
         data = data.json()
+
+        if city != None:
+            lat = data['city']['coord']['lat']
+            lon = data['city']['coord']['lon']
 
         all_t = []
         times = []
@@ -176,7 +180,8 @@ def get_forecast(locationid = 0):
                 weather.append([{'name': w['main'], 'icon_route': ICON+w['icon']+'.png'} for w in d['weather']])
                 i+=1
 
-        highlow = dao.high_lows(all_t, times, local_time)
+        tz = data['city']['timezone']
+        highlow = dao.high_lows(all_t, times, tz)
         forecast_12hr = highlow['12hr_forecast']
         for hour in range(len(weather)):
             forecast_12hr[hour]['weather'] = weather[hour]
