@@ -45,7 +45,6 @@ Both the weather and forecast information is returned to the app, which presents
 the information to the user.
 </p>
 
-
 ### Backend requirements:
 <ol>
 <li>Designed an API (app.py) using Flask routes and queries to a database (db.py)
