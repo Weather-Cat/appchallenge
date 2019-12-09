@@ -73,8 +73,8 @@ Response:
 {
 "success": true,
 "data": {
-    "latitude": <USER INPUT FOR LATITUDE OR null>,
-    "longitude": <USER INPUT FOR LONGITUDE OR null>,
+    "latitude": <USER INPUT FOR LATITUDE OR coordinates of the city>,
+    "longitude": <USER INPUT FOR LONGITUDE OR coordinates of the city>,
     "city": <USER INPUT FOR CITY OR null>
     "units": <USER INPUT FOR UNITS>,
     "high_temps": <list of 3 numbers, index 0=tomorrow, index 1=2 days from today, etc>,
