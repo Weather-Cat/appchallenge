@@ -66,7 +66,6 @@ Body:
 "latitude": <USER INPUT>,
 "longitude": <USER INPUT>,
 "units": <string, "imperial" (F, mph) or "metric"(C, m/s)>
-"local_time": <string, in format "YYYY-MM-DD HH:MM:SS">
 }
 NOTE: only include Cityname OR latitude/longitude. If both are included, the
 function will find the forecast at the given coordinates, not the city.

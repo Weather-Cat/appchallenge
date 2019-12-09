@@ -35,7 +35,7 @@ def convert_wind(dir):
     return dir
 
 
-def high_lows(temps, times, local_time):
+def high_lows(temps, times, tz):
     """Sorts out the highs and lows for a given block of temperatures. Also
     captures the local time and temperature for the first four items. Returns a
     dictionary, {"highs": [], "lows": [], "12hr_forecast": [list of dict]).
@@ -46,13 +46,11 @@ def high_lows(temps, times, local_time):
     """
     assert is_number_list(temps)
     assert is_string_list(times)
-    assert type(local_time) == str
-    
+    assert type(tz) == int
+
     times = clean_times(times)
     length = len(times)
-    local_now = clean_times(local_time, False)[0]
-    utc_now = datetime.now(timezone.utc)
-    offset = utc_now.hour - local_now.hour
+    offset = int(tz/3600)
 
     last_midnight = -1
     first4 = 0
@@ -61,7 +59,7 @@ def high_lows(temps, times, local_time):
     i_highs = []
     lows = []
     for t in range(length):
-        local = (times[t].hour - offset) % 24
+        local = (times[t].hour + offset) % 24
         #scoop off the local time and the temperature for the first 4 time/temperature pairs
         if first4 < 4:
             forecast_12hr.append({'time': local, 'temp': temps[t]})
@@ -97,17 +95,11 @@ def high_lows(temps, times, local_time):
     return {'highs': highs[:len(highs)-1], 'lows': lows, '12hr_forecast': forecast_12hr}
 
 
-def clean_times(times, is_list=True):
+def clean_times(times):
     """Turns a list of strings formated in 'YYYY-MM-DD HH:MM:SS' to a list of
     datetime objects. Ignores the minutes and seconds of the string. Returns the
     new list."""
-    if is_list == True:
-        assert is_string_list(times)
-    else:
-        assert type(times) == str
-        alt = times
-        times = []
-        times.append(alt)
+    assert is_string_list(times)
 
     newtimes = []
     for i in times:
