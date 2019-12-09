@@ -195,7 +195,7 @@ def get_forecast():
                 "units": units,
                 "high_temps": highlow['highs'],
                 "low_temps": highlow['lows'],
-                "12hr_forecast": forecast_12hr
+                "twelvehrforecast": forecast_12hr
             }}), 200
 
     except:
